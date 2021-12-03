@@ -83,27 +83,19 @@ class ilExamOrgaCronJob  extends ilCronJob
 		}
 		else
 		{
-			try
-			{
-				/** @var ilExamOrgaPlugin $orgaPlugin */
-                $orgaPlugin = $this->plugin->getOrgaPlugin();
-				list($done, $message) = $orgaPlugin->handleCronJob();
+            /** @var ilExamOrgaPlugin $orgaPlugin */
+            $orgaPlugin = $this->plugin->getOrgaPlugin();
+            list($done, $message) = $orgaPlugin->handleCronJob();
 
-				if ($done)	{
-                    $result->setStatus(ilCronJobResult::STATUS_OK);
-                    $result->setMessage($message);
- 				}
-				else {
-                    $result->setStatus(ilCronJobResult::STATUS_NO_ACTION);
-                    $result->setMessage($message);
-				}
-				return $result;
-			}
-			catch (Exception $e) {
-				$result->setStatus(ilCronJobResult::STATUS_FAIL);
-				$result->setMessage($e->getMessage());
-				return $result;
-			}
+            if ($done)	{
+                $result->setStatus(ilCronJobResult::STATUS_OK);
+                $result->setMessage($message);
+            }
+            else {
+                $result->setStatus(ilCronJobResult::STATUS_NO_ACTION);
+                $result->setMessage($message);
+            }
+            return $result;
 		}
 	}
 
