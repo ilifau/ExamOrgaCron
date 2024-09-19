@@ -3,19 +3,18 @@
 
 class ilExamOrgaCronPlugin extends ilCronHookPlugin
 {
-	function getPluginName()
+	function getPluginName(): string
 	{
 		return "ExamOrgaCron";
 	}
 
-	function getCronJobInstances()
+	function getCronJobInstances(): array
 	{
 		return array($this->getCronJobInstance('exam_orga_cron'));
 	}
 
-	function getCronJobInstance($a_job_id)
+	function getCronJobInstance($a_job_id): ilExamOrgaCronJob
 	{
-		$this->includeClass('class.ilExamOrgaCronJob.php');
 		return new ilExamOrgaCronJob($this);
 	}
 
@@ -24,10 +23,12 @@ class ilExamOrgaCronPlugin extends ilCronHookPlugin
 	 * @return bool
 	 * @throws ilPluginException
 	 */
-	function beforeActivation()
+	function beforeActivation(): bool
 	{
+		global $DIC;
+		
 		if (!$this->checkOrgaPluginActive()) {
-			ilUtil::sendFailure($this->txt("message_orga_plugin_missing"), true);
+			$DIC->ui()->mainTemplate()->setOnScreenMessage('failure', $this->txt("message_orga_plugin_missing"), true);
 			// this does not show the message
 			// throw new ilPluginException($this->txt("message_creator_plugin_missing"));
 			return false;
@@ -40,21 +41,33 @@ class ilExamOrgaCronPlugin extends ilCronHookPlugin
 	 * Check if the orga plugin is active
 	 * @return bool
 	 */
-	public function checkOrgaPluginActive()
-	{
+	public function checkOrgaPluginActive(): bool
+	{		
 		global $DIC;
-		/** @var ilPluginAdmin $ilPluginAdmin */
-		$ilPluginAdmin = $DIC['ilPluginAdmin'];
 
-		return $ilPluginAdmin->isActive('Services', 'Repository', 'robj', 'ExamOrga');
+		/** @var ilComponentFactory $factory */
+		$factory = $DIC["component.factory"];
+	
+		/** @var ilPlugin $plugin */
+		foreach ($factory->getActivePluginsInSlot('robj') as $plugin) {
+			if ($plugin->getPluginName() == 'ExamOrga') {
+				return $plugin->isActive();
+			}
+		}
+		return false;			
 	}
 
 	/**
 	 * Get the creator plugin object
 	 * @return ilPlugin
 	 */
-	public function getOrgaPlugin()
+	public function getOrgaPlugin(): mixed
 	{
-		return ilPluginAdmin::getPluginObject('Services', 'Repository', 'robj', 'ExamOrga');
+		global $DIC;
+
+        /** @var ilComponentFactory $factory */
+        $factory = $DIC["component.factory"];
+
+		return $factory->getPlugin('xamo');		
 	}
 }
