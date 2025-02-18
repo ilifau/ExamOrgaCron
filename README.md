@@ -3,8 +3,9 @@
 Copyright (c) 2020 Institut fuer Lern-Innovation, Friedrich-Alexander-Universitaet Erlangen-Nuernberg
 GPLv3, see LICENSE
 
-Author: Fred Neumann <fred.neumann@ili.fau.de>
-
+Author: 
+* Fred Neumann <fred.neumann@ili.fau.de>
+* Christina Fuchs <chr.fuchs@fau.de>
 
 This plugin for the LMS ILIAS open source provides a cron job task for the ExamAdmin plugin.
 
